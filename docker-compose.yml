@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ./php_mysql_crud_practice
+      dockerfile: Dockerfile
+    ports:
+      - "1122:80"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: example
+      DB_NAME: crud_db
+    volumes:
+      - ./php_mysql_crud_practice:/var/www/html
+    networks:
+      - appnet
+
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: crud_db
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./sql.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "3344:3306"
+    networks:
+      - appnet
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: example
+    ports:
+      - "2233:80"
+    networks:
+      - appnet
+
+volumes:
+  db_data:
+
+networks:
+  appnet:
+    driver: bridge
