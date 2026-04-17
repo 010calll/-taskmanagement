@@ -3,7 +3,7 @@ version: '3.8'
 services:
   web:
     build:
-      context: ./php_mysql_crud_practice
+      context: .
       dockerfile: Dockerfile
     ports:
       - "1122:80"
@@ -15,7 +15,7 @@ services:
       DB_PASSWORD: example
       DB_NAME: crud_db
     volumes:
-      - ./php_mysql_crud_practice:/var/www/html
+      - .:/var/www/html
     networks:
       - appnet
 
