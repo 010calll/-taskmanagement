@@ -5,5 +5,6 @@ CREATE TABLE IF NOT EXISTS tasks (
   task_id INT AUTO_INCREMENT PRIMARY KEY,
   task_name VARCHAR(255) NOT NULL,
   task_description TEXT,
+  status VARCHAR(20) NOT NULL DEFAULT 'pending',
   creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

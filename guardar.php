@@ -2,10 +2,11 @@
 include("db.php");
 
 if(isset($_POST['save'])){
-  $title = $_POST['form_title'];
-  $description = $_POST['form_description'];
+  $title = mysqli_real_escape_string($conn, $_POST['form_title']);
+  $description = mysqli_real_escape_string($conn, $_POST['form_description']);
+  $status = isset($_POST['form_status']) && in_array($_POST['form_status'], ['pending','in_progress','done']) ? $_POST['form_status'] : 'pending';
 
-  $query = "INSERT INTO tasks(task_name, task_description) VALUES('$title', '$description')";
+  $query = "INSERT INTO tasks(task_name, task_description, status) VALUES('$title', '$description', '$status')";
   $result = mysqli_query($conn, $query);
 
   if(!$result){
