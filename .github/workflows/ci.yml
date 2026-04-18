@@ -4,10 +4,6 @@ on:
   push:
     branches: [ "main" ]
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,33 +11,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          submodules: recursive
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker compose services
-        run: |
-          docker compose build --no-cache
+        run: docker compose build --no-cache
 
       - name: Start services
-        run: |
-          docker compose up -d
+        run: docker compose up -d
 
       - name: Wait for web service
-        run: |
-          timeout 60 bash -c 'until curl -s http://localhost:1122 >/dev/null; do sleep 3; done'
+        run: timeout 60 bash -c 'until curl -s http://localhost:1122 >/dev/null; do sleep 3; done'
 
       - name: Smoke test home page
-        run: |
-          curl -f http://localhost:1122
+        run: curl -f http://localhost:1122
 
       - name: Stop services
         if: always()
-        run: |
-          docker compose down
+        run: docker compose down
 
   deploy:
     needs: build
@@ -55,7 +43,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd project
+            cd ./-taskmanagement
             git pull origin main
             docker compose down
             docker compose up --build -d
